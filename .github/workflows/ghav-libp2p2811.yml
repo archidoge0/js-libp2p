@@ -1,0 +1,57 @@
+name: GHAV libp2p 2811 before
+on:
+  push:
+    branches:
+      - codex/ghav-libp2p2811-before
+permissions:
+  contents: read
+  actions: write
+env:
+  CI: true
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: 2f6e72cb56356a432fae253b08e442f8b30d460c
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - name: Fixed source and toolchain
+        run: |
+          git rev-parse HEAD
+          sha256sum package-lock.json
+          node --version
+          npm --version
+      - uses: ipfs/aegir/actions/cache-node-modules@e944a07402a58d6958628e12fa6343e20cb918e8 # v48.1.6
+        with:
+          directories: |
+            ./interop/dist
+            ./interop/node_modules
+            ./doc/node_modules
+  check:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: 2f6e72cb56356a432fae253b08e442f8b30d460c
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.21.0
+          package-manager-cache: false
+      - name: Fixed source and toolchain
+        run: |
+          git rev-parse HEAD
+          sha256sum package-lock.json
+          node --version
+          npm --version
+      - uses: ipfs/aegir/actions/cache-node-modules@e944a07402a58d6958628e12fa6343e20cb918e8 # v48.1.6
+      - run: npm run --if-present lint
+      - run: npm run --if-present dep-check
+      - run: npm run --if-present docs:no-publish
+      - run: npm run --if-present doc-check

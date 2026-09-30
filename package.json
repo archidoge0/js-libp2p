@@ -51,6 +51,9 @@
     "packages/*"
   ],
   "overrides": {
-    "protons-runtime": "^5.5.0"
+    "protons-runtime": "^5.5.0",
+    "ipfs-unixfs": {
+      "protons-runtime": "^6.0.1"
+    }
   }
 }
